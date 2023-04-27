@@ -11,5 +11,6 @@ namespace Tutorial2TareasMVC.Entitys
         public string Descripcion { get; set; }
         public int Orden { get; set; }
         public DateTime FechaCreacion { get; set; }
+        public List<Paso> Pasos { get; set; }
     }
 }
