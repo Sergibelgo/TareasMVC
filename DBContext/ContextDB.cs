@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tutorial2TareasMVC.Entitys;
 
 namespace Tutorial2TareasMVC.DBContext
@@ -7,7 +8,7 @@ namespace Tutorial2TareasMVC.DBContext
     {
         DbSet<Tarea> Tareas { get; set; }
     }
-    public class ContextDB : DbContext, IContextDB
+    public class ContextDB : IdentityDbContext, IContextDB
     {
         public ContextDB(DbContextOptions options) : base(options)
         {
