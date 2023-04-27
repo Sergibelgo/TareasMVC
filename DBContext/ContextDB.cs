@@ -19,5 +19,6 @@ namespace Tutorial2TareasMVC.DBContext
             modelBuilder.Entity<Tarea>().Property(t=>t.Titulo).HasMaxLength(250).IsRequired();
         }
         public DbSet<Tarea> Tareas { get; set; }
+        public DbSet<Paso> Pasos { get; set; }
     }
 }
