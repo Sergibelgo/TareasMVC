@@ -1,8 +1,12 @@
-﻿namespace Tutorial2TareasMVC.Entitys
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Tutorial2TareasMVC.Entitys
 {
     public class Tarea
     {
         public int Id { get; set; }
+        [StringLength(100)]
+        [Required]
         public string Titulo { get; set; }
         public string Descripcion { get; set; }
         public int Orden { get; set; }
