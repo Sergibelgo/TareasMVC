@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
@@ -12,15 +14,19 @@ namespace Tutorial2TareasMVC
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
             builder.Services.AddDbContext<ContextDB>(opciones => opciones.UseSqlServer("name=DefaultConnection"));
             //builder.Services.AddDbContext<ContextDB>(opciones =>
             //opciones.UseMySql(
             //    builder.Configuration.GetConnectionString("MariaDbConnectionString"),
             //    new MariaDbServerVersion(new Version(10, 3, 27))
             //    ));
-                
+
             // Add services to the container.
+            builder.Services.AddControllersWithViews(opciones =>
+            {
+                opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
+            });
             builder.Services.AddControllersWithViews();
             builder.Services.AddTransient<IContextDB, ContextDB>();
             builder.Services.AddAuthentication();
