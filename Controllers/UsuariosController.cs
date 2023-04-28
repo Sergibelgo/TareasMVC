@@ -140,7 +140,9 @@ namespace Tutorial2TareasMVC.Controllers
             mensaje = "Ha ocurrido un error agregando el login";
             return RedirectToAction("login", routeValues: new { mensaje });
         }
+        
         [HttpGet]
+        [Authorize(Roles = $"{Constantes.RolAdmin}")]
         public async Task<IActionResult> Listado(string mensaje = null)
         {
             var usuarios = await _contextDB.Users.Select(x => new UsuarioDTO { Email = x.Email }).ToListAsync();
@@ -152,6 +154,7 @@ namespace Tutorial2TareasMVC.Controllers
             return View(listado);
         }
         [HttpPost]
+        [Authorize(Roles = $"{Constantes.RolAdmin}")]
         public async Task<IActionResult> HacerAdmin(string email)
         {
             var usuario = await _contextDB.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
@@ -163,6 +166,7 @@ namespace Tutorial2TareasMVC.Controllers
             return RedirectToAction("Listado", routeValues: new { mensaje = $"Rol asignado correctamente a {email}" });
         }
         [HttpPost]
+        [Authorize(Roles = $"{Constantes.RolAdmin}")]
         public async Task<IActionResult> RemoverAdmin(string email)
         {
             var usuario = await _contextDB.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
