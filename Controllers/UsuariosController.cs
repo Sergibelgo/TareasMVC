@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Tutorial2TareasMVC.Models;
 
 namespace Tutorial2TareasMVC.Controllers
@@ -46,8 +47,12 @@ namespace Tutorial2TareasMVC.Controllers
             }
         }
         [AllowAnonymous]
-        public ActionResult Login()
+        public ActionResult Login(string mensaje=null)
         {
+            if (mensaje!=null)
+            {
+                ViewData["mensaje"] = mensaje;
+            }
             return View();
         }
         [HttpPost]
@@ -74,6 +79,61 @@ namespace Tutorial2TareasMVC.Controllers
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return RedirectToAction("Index", "Home");
+        }
+        [AllowAnonymous]
+        public ChallengeResult LoginExterno(string proveedor, string urlRetorno = null)
+        {
+            var urlRedireccion = Url.Action("RegistrarUsuarioExterno", values: new { urlRetorno });
+            var propiedades = _signInManager.ConfigureExternalAuthenticationProperties(proveedor, urlRetorno);
+            return new ChallengeResult(proveedor, propiedades);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> RegistrarUsuarioExterno(string urlRetorno = null, string remoteError = null)
+        {
+            urlRetorno = urlRetorno ?? Url.Content("~/");
+            var mensaje = "";
+            if (remoteError != null)
+            {
+                mensaje = $"Error del proveedor externo: {remoteError}";
+                return RedirectToAction("login", routeValues: new { mensaje });
+            }
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info is null)
+            {
+                mensaje = "Error cargando la data de login externo";
+                return RedirectToAction("login", routeValues: new { mensaje });
+            }
+            var resultadoLoginExterno = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true, bypassTwoFactor: true);
+            if (resultadoLoginExterno.Succeeded)
+            {
+                return LocalRedirect(urlRetorno);
+            }
+            string email = "";
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            {
+                email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            }
+            else
+            {
+                mensaje = "Error leyendo el email del usuario del proveedor";
+                return RedirectToAction("login", routeValues: new { mensaje });
+            }
+            var usuario = new IdentityUser { Email = email, UserName = email };
+            var resultadoCrearUsuario = await _userManager.CreateAsync(usuario);
+            if (!resultadoCrearUsuario.Succeeded)
+            {
+                mensaje = resultadoCrearUsuario.Errors.First().Description;
+                return RedirectToAction("login", routeValues: new { mensaje });
+            }
+
+            var resultadoAgregarLogin = await _userManager.AddLoginAsync(usuario, info);
+            if (resultadoAgregarLogin.Succeeded)
+            {
+                await _signInManager.SignInAsync(usuario, isPersistent: true, info.LoginProvider);
+                return LocalRedirect(urlRetorno);
+            }
+            mensaje = "Ha ocurrido un error agregando el login";
+            return RedirectToAction("login", routeValues: new { mensaje });
         }
     }
 }
