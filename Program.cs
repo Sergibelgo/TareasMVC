@@ -30,6 +30,10 @@ namespace Tutorial2TareasMVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddTransient<IContextDB, ContextDB>();
             builder.Services.AddAuthentication();
+
+            //Añadir localicacion
+            builder.Services.AddLocalization();
+
             //Añadir identity
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(opciones =>
             {
