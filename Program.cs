@@ -32,7 +32,10 @@ namespace Tutorial2TareasMVC
             builder.Services.AddAuthentication();
 
             //Añadir localicacion
-            builder.Services.AddLocalization();
+            builder.Services.AddLocalization(opciones =>
+            {
+                opciones.ResourcesPath = "Resources";
+            });
 
             //Añadir identity
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(opciones =>
