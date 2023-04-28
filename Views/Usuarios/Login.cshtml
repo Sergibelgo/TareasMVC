@@ -3,7 +3,7 @@
     ViewData["title"] = "Login";
 }
 <h1>Login</h1>
-@if(@ViewData.Key.Contains("mensaje")){
+@if(@ViewData["mensaje"]!=null){
     <p class="text-danger">
         @ViewData["mensaje"]
     </p>
