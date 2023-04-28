@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Tutorial2TareasMVC.DBContext;
 using Tutorial2TareasMVC.Models;
+using Tutorial2TareasMVC.Services;
 
 namespace Tutorial2TareasMVC.Controllers
 {
@@ -15,7 +16,7 @@ namespace Tutorial2TareasMVC.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ContextDB _contextDB;
 
-        public UsuariosController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,ContextDB  contextDB)
+        public UsuariosController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ContextDB contextDB)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
@@ -51,9 +52,9 @@ namespace Tutorial2TareasMVC.Controllers
             }
         }
         [AllowAnonymous]
-        public ActionResult Login(string mensaje=null)
+        public ActionResult Login(string mensaje = null)
         {
-            if (mensaje!=null)
+            if (mensaje != null)
             {
                 ViewData["mensaje"] = mensaje;
             }
@@ -142,13 +143,35 @@ namespace Tutorial2TareasMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Listado(string mensaje = null)
         {
-            var usuarios = await _contextDB.Users.Select(x=>new UsuarioDTO { Email=x.Email}).ToListAsync();
+            var usuarios = await _contextDB.Users.Select(x => new UsuarioDTO { Email = x.Email }).ToListAsync();
             UsuariosListadosView listado = new()
             {
                 Usuarios = usuarios,
                 Mensaje = mensaje
             };
             return View(listado);
+        }
+        [HttpPost]
+        public async Task<IActionResult> HacerAdmin(string email)
+        {
+            var usuario = await _contextDB.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            if (usuario is null)
+            {
+                return NotFound();
+            }
+            await _userManager.AddToRoleAsync(usuario, Constantes.RolAdmin);
+            return RedirectToAction("Listado", routeValues: new { mensaje = $"Rol asignado correctamente a {email}" });
+        }
+        [HttpPost]
+        public async Task<IActionResult> RemoverAdmin(string email)
+        {
+            var usuario = await _contextDB.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            if (usuario is null)
+            {
+                return NotFound();
+            }
+            await _userManager.RemoveFromRoleAsync(usuario, Constantes.RolAdmin);
+            return RedirectToAction("Listado", routeValues: new { mensaje = $"Rol removido correctamente a {email}" });
         }
     }
 }
