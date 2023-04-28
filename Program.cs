@@ -47,6 +47,14 @@ namespace Tutorial2TareasMVC
             });
             var app = builder.Build();
 
+            //Añadir mas culturas soportadas
+            var culturasUISoportadas = new[] { "es", "en" };
+            app.UseRequestLocalization(opciones =>
+            {
+                opciones.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("es");
+                opciones.SupportedCultures = culturasUISoportadas.Select(cultura=>new System.Globalization.CultureInfo(cultura)).ToList();
+            });
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
