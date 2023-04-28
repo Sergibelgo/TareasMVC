@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tutorial2TareasMVC.Models;
@@ -10,7 +11,7 @@ namespace Tutorial2TareasMVC.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
 
-        public UsuariosController( UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager)
+        public UsuariosController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
@@ -29,20 +30,50 @@ namespace Tutorial2TareasMVC.Controllers
                 return View(modelo);
             }
             var usuario = new IdentityUser() { Email = modelo.Email, UserName = modelo.Email };
-            var resultado = await _userManager.CreateAsync(usuario,password:modelo.Password);
+            var resultado = await _userManager.CreateAsync(usuario, password: modelo.Password);
             if (resultado.Succeeded)
             {
                 await _signInManager.SignInAsync(usuario, isPersistent: true);
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                foreach(var error in resultado.Errors)
+                foreach (var error in resultado.Errors)
                 {
-                    ModelState.AddModelError(string.Empty,error.Description);
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
                 return View(modelo);
             }
+        }
+        [AllowAnonymous]
+        public ActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginDTO modelo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(modelo);
+            }
+            var resultado = await _signInManager.PasswordSignInAsync(modelo.Email, modelo.Password, modelo.Recuerdame, lockoutOnFailure: false);
+            if (resultado.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "El usuario o la contraseña no son validos");
+                return View(modelo);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            return RedirectToAction("Index", "Home");
         }
     }
 }
