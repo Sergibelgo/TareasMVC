@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Tutorial2TareasMVC.DBContext;
 using Tutorial2TareasMVC.Models;
 
 namespace Tutorial2TareasMVC.Controllers
@@ -11,11 +13,13 @@ namespace Tutorial2TareasMVC.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ContextDB _contextDB;
 
-        public UsuariosController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public UsuariosController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,ContextDB  contextDB)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
+            this._contextDB = contextDB;
         }
         [AllowAnonymous]
         public ActionResult Registro()
@@ -134,6 +138,17 @@ namespace Tutorial2TareasMVC.Controllers
             }
             mensaje = "Ha ocurrido un error agregando el login";
             return RedirectToAction("login", routeValues: new { mensaje });
+        }
+        [HttpGet]
+        public async Task<IActionResult> Listado(string mensaje = null)
+        {
+            var usuarios = await _contextDB.Users.Select(x=>new UsuarioDTO { Email=x.Email}).ToListAsync();
+            UsuariosListadosView listado = new()
+            {
+                Usuarios = usuarios,
+                Mensaje = mensaje
+            };
+            return View(listado);
         }
     }
 }
