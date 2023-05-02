@@ -47,8 +47,13 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - Tutorial2TareasMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container d-flex justify-content-between">
+            <div>
+                &copy; 2023 - Tutorial2TareasMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+            <div>
+                <partial name="_CambiarIdioma" />
+            </div>
         </div>
     </footer>
     <partial name="_TraduccionesJS" />
