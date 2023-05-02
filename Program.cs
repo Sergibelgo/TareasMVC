@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Tutorial2TareasMVC.DBContext;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace Tutorial2TareasMVC
 {
@@ -26,7 +27,8 @@ namespace Tutorial2TareasMVC
             builder.Services.AddControllersWithViews(opciones =>
             {
                 opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
-            });
+            }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization()
+                ;
             builder.Services.AddControllersWithViews();
             builder.Services.AddTransient<IContextDB, ContextDB>();
             builder.Services.AddAuthentication();
@@ -56,6 +58,7 @@ namespace Tutorial2TareasMVC
             {
                 opciones.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("es");
                 opciones.SupportedCultures = culturasUISoportadas.Select(cultura=>new System.Globalization.CultureInfo(cultura)).ToList();
+                opciones.SupportedUICultures = culturasUISoportadas.Select(cultura => new System.Globalization.CultureInfo(cultura)).ToList();
             });
 
             // Configure the HTTP request pipeline.
