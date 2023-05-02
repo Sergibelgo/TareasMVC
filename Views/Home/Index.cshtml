@@ -9,6 +9,9 @@
     </h1>
 </div>
 <div id="contenedor-listado-tareas" class="text-center">
+    <div data-bind="visible:cargando" class="spinner-border">
+        <span class="visually-hidden">@localizer["Cargando"]...</span>
+    </div>
     <div class="text-start" data-bind="foreach: tareas">
         <div name="tarea" class="border mb-2 p-2" style="cursor:pointer">
             <div data-bind="text:titulo" class="fw-bold">
@@ -21,9 +24,13 @@
     <script>
         const tareaListadoViewModel = {
             tareas: ko.observableArray([
-            {titulo:"Prueba"},
-            {titulo:"Prueba2"}])
+            ]),
+            cargando:ko.observable(true)
         };
+        setTimeout(()=>{
+        tareaListadoViewModel.tareas.push({titulo:"Tarea 1"});
+        tareaListadoViewModel.cargando(false);
+        },2000)
         ko.applyBindings(tareaListadoViewModel,document.getElementById('contenedor-listado-tareas'))
     </script>
 }
