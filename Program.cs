@@ -27,8 +27,10 @@ namespace Tutorial2TareasMVC
             builder.Services.AddControllersWithViews(opciones =>
             {
                 opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
-            }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization()
-                ;
+            }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization(opciones =>
+            {
+                opciones.DataAnnotationLocalizerProvider = (_, factoria) => factoria.Create(typeof(RecursoCompartido));
+            }); 
             builder.Services.AddControllersWithViews();
             builder.Services.AddTransient<IContextDB, ContextDB>();
             builder.Services.AddAuthentication();
