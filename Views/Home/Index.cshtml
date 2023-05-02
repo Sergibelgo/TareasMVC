@@ -12,25 +12,36 @@
     <div data-bind="visible:cargando" class="spinner-border">
         <span class="visually-hidden">@localizer["Cargando"]...</span>
     </div>
+    <div data-bind="visible:noHayTareas">
+        @localizer["No hay tareas"]
+    </div>
     <div class="text-start" data-bind="foreach: tareas">
         <div name="tarea" class="border mb-2 p-2" style="cursor:pointer">
             <div data-bind="text:titulo" class="fw-bold">
-
             </div>
         </div>
     </div>
 </div>
 @section Scripts{
     <script>
-        const tareaListadoViewModel = {
-            tareas: ko.observableArray([
-            ]),
-            cargando:ko.observable(true)
-        };
-        setTimeout(()=>{
-        tareaListadoViewModel.tareas.push({titulo:"Tarea 1"});
-        tareaListadoViewModel.cargando(false);
-        },2000)
-        ko.applyBindings(tareaListadoViewModel,document.getElementById('contenedor-listado-tareas'))
+        function tareaListadoViewModelFn() {
+            let self = this;
+            self.tareas = ko.observableArray([
+            ]);
+                self.cargando = ko.observable(true);
+                self.noHayTareas=ko.pureComputed(()=>{
+                    if(self.cargando()){
+                        return false;
+                    }
+                    return self.tareas().length==0;
+                })
+        }
+        
+        const tareaListadoViewModel = new tareaListadoViewModelFn();
+        setTimeout(() => {
+            //tareaListadoViewModel.tareas.push({ titulo: "Tarea 1" });
+            tareaListadoViewModel.cargando(false);
+        }, 2000)
+        ko.applyBindings(tareaListadoViewModel, document.getElementById('contenedor-listado-tareas'))
     </script>
 }
