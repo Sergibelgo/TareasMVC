@@ -40,5 +40,12 @@ namespace Tutorial2TareasMVC.Controllers
             await _contextDB.SaveChangesAsync();
             return Ok(tarea);
         }
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var usuarioId = userService.ObtenerUsuarioId();
+            var tareas = await _contextDB.Tareas.Where(t=>t.UsuarioCreacion.Id==usuarioId).ToListAsync();
+            return Ok(tareas);
+        }
     }
 }

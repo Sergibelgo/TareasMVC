@@ -13,7 +13,7 @@ async function manejarFocusoutTituloTarea(tarea) {
         method: "POST",
         body: data,
         headers: {
-            "Content-type":"application/json"
+            "Content-type": "application/json"
         }
     })
     if (respuesta.ok) {
@@ -21,5 +21,19 @@ async function manejarFocusoutTituloTarea(tarea) {
         tarea.id(json.id);
     } else {
         alert("a");
+    }
+}
+async function obtenerTareas() {
+    tareaListadoViewModel.cargando(true);
+    const respuesta = await fetch(urlTareas);
+    if (!respuesta.ok) {
+        alert("a");
+    } else {
+        const json = await respuesta.json();
+        tareaListadoViewModel.tareas([]);
+        json.forEach(valor => {
+            tareaListadoViewModel.tareas.push(new tareaElementoListadoDTO(valor))
+        });
+        tareaListadoViewModel.cargando(false);
     }
 }
