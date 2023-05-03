@@ -1,1 +1,1 @@
-﻿
+﻿const urlTareas = "/api/tareas";
