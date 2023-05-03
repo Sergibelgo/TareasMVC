@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tutorial2TareasMVC.DBContext;
 using Tutorial2TareasMVC.Entitys;
+using Tutorial2TareasMVC.Models;
 using Tutorial2TareasMVC.Services;
 
 namespace Tutorial2TareasMVC.Controllers
@@ -44,7 +45,15 @@ namespace Tutorial2TareasMVC.Controllers
         public async Task<IActionResult> Get()
         {
             var usuarioId = userService.ObtenerUsuarioId();
-            var tareas = await _contextDB.Tareas.Where(t=>t.UsuarioCreacion.Id==usuarioId).ToListAsync();
+            var tareas = await _contextDB.Tareas
+                .Where(t => t.UsuarioCreacion.Id == usuarioId)
+                .OrderBy(t => t.Orden)
+                .Select(t => new TareaDTO
+            {
+                Id = t.Id,
+                Titulo = t.Titulo
+            })
+                .ToListAsync();
             return Ok(tareas);
         }
     }
