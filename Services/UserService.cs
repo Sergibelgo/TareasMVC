@@ -4,7 +4,7 @@ namespace Tutorial2TareasMVC.Services
 {
     public interface IUserService
     {
-
+        string ObtenerUsuarioId();
     }
     public class UserService:IUserService
     {
