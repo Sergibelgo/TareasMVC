@@ -20,7 +20,7 @@
         <div name="tarea" class="border mb-2 p-2" style="cursor:pointer">
             <div data-bind="text:titulo,hidden:esNuevo" class="fw-bold">
             </div>
-            <input type="text" name="titulo-tarea" autocomplete="off" data-bind="value:titulo,visible:esNuevo,event:{focusout: manejarFocusoutTituloTarea}" /> 
+            <input type="text" name="titulo-tarea" autocomplete="off" data-bind="value:titulo,visible:esNuevo,event:{focusout: manejarFocusoutTituloTarea}" />
         </div>
     </div>
 </div>
@@ -31,28 +31,30 @@
             let self = this;
             self.tareas = ko.observableArray([
             ]);
-                self.cargando = ko.observable(true);
-                self.noHayTareas=ko.pureComputed(()=>{
-                    if(self.cargando()){
-                        return false;
-                    }
-                    return self.tareas().length==0;
-                })
+            self.cargando = ko.observable(true);
+            self.noHayTareas = ko.pureComputed(() => {
+                if (self.cargando()) {
+                    return false;
+                }
+                return self.tareas().length == 0;
+            })
         }
-        function tareaElementoListadoDTO({id,titulo}){
-            var self=this;
-            self.id=ko.observable(id);
-            self.titulo=ko.observable(titulo);
-            self.esNuevo=ko.pureComputed(function(){
-            return self.id()==0})
+        function tareaElementoListadoDTO({ id, titulo }) {
+            var self = this;
+            self.id = ko.observable(id);
+            self.titulo = ko.observable(titulo);
+            self.esNuevo = ko.pureComputed(function () {
+                return self.id() == 0
+            })
         }
-        
+
         const tareaListadoViewModel = new tareaListadoViewModelFn();
-        setTimeout(() => {
-            //tareaListadoViewModel.tareas.push({ titulo: "Tarea 1" });
-            tareaListadoViewModel.cargando(false);
-        }, 100)
-        ko.applyBindings(tareaListadoViewModel, document.getElementById('contenedor-listado-tareas'))
+        $(() => {
+            ko.applyBindings(tareaListadoViewModel, document.getElementById('contenedor-listado-tareas'))
+            obtenerTareas();
+            
+        })
+
     </script>
 
 }
