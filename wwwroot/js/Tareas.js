@@ -59,7 +59,7 @@ async function enviarIdsTareasAlBackend(ids) {
         method: "POST",
         body: data,
         headers: {
-            "Content-Type":"application/json"
+            "Content-Type": "application/json"
         }
     })
 }
@@ -74,7 +74,43 @@ async function manejarClickTarea(tarea) {
     }
     const json = await respuesta.json();
     tareaEditarVM.id = json.id;
-    tareaEditarVM.titulo( json.titulo);
+    tareaEditarVM.titulo(json.titulo);
     tareaEditarVM.descripcion(json.descripcion);
     $("#modal-editar-tarea").modal("show");
+}
+async function manejarCambioTarea() {
+    const obj = {
+        id: tareaEditarVM.id,
+        titulo: tareaEditarVM.titulo(),
+        descripcion: tareaEditarVM.descripcion()
+    }
+    if (!obj.titulo) {
+        return;
+    }
+    try {
+        await editarTarea(obj);
+        const indice = tareaListadoViewModel.tareas().findIndex(t => t.id() == obj.id);
+        const tarea = tareaListadoViewModel.tareas()[indice];
+        tarea.titulo(obj.titulo);
+        $("#modal-editar-tarea").modal("hide");
+    } catch {
+        swal.fire({
+            icon: "error",
+            text:"Error al guardar los cambios"
+        })
+    }
+}
+async function editarTarea(tarea) {
+    const data = JSON.stringify(tarea);
+    const respuesta = await fetch(`${urlTareas}/${tarea.id}`, {
+        method: "PUT",
+        body: data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    if (!respuesta.ok) {
+        manejarErrorApi(respuesta);
+        throw "error";
+    }
 }
