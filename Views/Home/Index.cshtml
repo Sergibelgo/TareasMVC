@@ -24,6 +24,7 @@
         </div>
     </div>
 </div>
+<partial name="_ModalEditarTarea" />
 @section Scripts{
     <script src="~/js/Tareas.js" asp-append-version="true"></script>
     <script>
@@ -55,8 +56,9 @@
 
         const tareaListadoViewModel = new tareaListadoViewModelFn();
         $(() => {
-            ko.applyBindings(tareaListadoViewModel, document.getElementById('contenedor-listado-tareas'))
+            ko.applyBindings(tareaListadoViewModel, document.getElementById('contenedor-listado-tareas'));
             obtenerTareas();
+            ko.applyBindings(tareaEditarVM, document.getElementById("modal-editar-tarea"));
             $("#reordenable").sortable({
                 axis: "y",
                 stop: async function () {

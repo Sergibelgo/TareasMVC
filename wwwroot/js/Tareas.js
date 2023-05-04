@@ -73,9 +73,8 @@ async function manejarClickTarea(tarea) {
         return;
     }
     const json = await respuesta.json();
-    console.log(json);
     tareaEditarVM.id = json.id;
-    tareaEditarVM.titulo = json.titulo;
-    tareaEditarVM.descripcion = json.descripcion;
-    console.log(tareaEditarVM);
+    tareaEditarVM.titulo( json.titulo);
+    tareaEditarVM.descripcion(json.descripcion);
+    $("#modal-editar-tarea").modal("show");
 }
