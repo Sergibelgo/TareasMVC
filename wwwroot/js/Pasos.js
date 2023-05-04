@@ -10,7 +10,8 @@ function manejarClickCancelarPaso(paso) {
     if (paso.esNuevo()) {
         tareaEditarVM.pasos.pop();
     } else {
-
+        paso.modoEdicion(false);
+        paso.descripcion(paso.descripcionAnterior);
     }
 }
 async function manejarClickSalvarPaso(paso) {
@@ -18,10 +19,13 @@ async function manejarClickSalvarPaso(paso) {
     const esNuevo = paso.esNuevo();
     const idTarea = tareaEditarVM.id;
     const data = obtenerCuerpoPeticionPaso(paso);
+    if (!paso.descripcion()) {
+        return;
+    }
     if (esNuevo) {
         insertarPaso(paso, data, idTarea);
     } else {
-
+        actualizarPaso(data, paso.id(), paso);
     }
 }
 function obtenerCuerpoPeticionPaso(paso) {
@@ -44,4 +48,23 @@ async function insertarPaso(paso, data, idTarea) {
     } else {
         manejarErrorApi(respuesta)
     }
+}
+async function actualizarPaso(data, id,paso) {
+    const respuesta = await fetch(`${urlPasos}/${id}`, {
+        body: data,
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json"
+        }
+    });
+    if (respuesta.ok) {
+        paso.modoEdicion(false)
+    } else {
+        mostrarMensajeError(respuesta)
+    }
+}
+function manejarClickDescripcionPaso(paso) {
+    paso.modoEdicion(true);
+    paso.descripcionAnterior = paso.descripcion();
+    $("[name=txtPasoDescripcion]:visible").focus();
 }

@@ -54,6 +54,24 @@ namespace Tutorial2TareasMVC.Controllers
             await _contextDB.SaveChangesAsync();
             return Ok(paso);
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] PasoCrearDTO model)
+        {
+            var usuarioId = _userService.ObtenerUsuarioId();
+            var paso = await _contextDB.Pasos.Include(p=>p.Tarea).ThenInclude(p=>p.UsuarioCreacion).FirstOrDefaultAsync(p=> p.Id==id);
+            if(paso is null)
+            {
+                return NotFound();
+            }
+            if (paso.Tarea.UsuarioCreacion.Id!=usuarioId)
+            {
+                return Forbid();
+            }
+            paso.Descripcion = model.Descripcion;
+            paso.Realizado = model.Realizado;
+            await _contextDB.SaveChangesAsync();
+            return Ok(paso);
+        }
 
 
     }
