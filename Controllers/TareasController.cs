@@ -81,7 +81,7 @@ namespace Tutorial2TareasMVC.Controllers
         public async Task<IActionResult> GetTarea(int id)
         {
             var usuarioId = userService.ObtenerUsuarioId();
-            var tarea = await _contextDB.Tareas.Where(t => t.UsuarioCreacion.Id == usuarioId && t.Id==id).FirstOrDefaultAsync();
+            var tarea = await _contextDB.Tareas.Where(t => t.UsuarioCreacion.Id == usuarioId && t.Id==id).Include(t=>t.Pasos).FirstOrDefaultAsync();
             if (tarea is null)
             {
                 return Forbid();
