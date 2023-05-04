@@ -25,6 +25,7 @@
     </div>
 </div>
 @section Scripts{
+    <script src="~/js/Utilidades.js"></script>
     <script src="~/js/Tareas.js" asp-append-version="true"></script>
     <script>
         function tareaListadoViewModelFn() {
@@ -52,7 +53,7 @@
         $(() => {
             ko.applyBindings(tareaListadoViewModel, document.getElementById('contenedor-listado-tareas'))
             obtenerTareas();
-            
+
         })
 
     </script>
