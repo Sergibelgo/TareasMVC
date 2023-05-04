@@ -42,6 +42,8 @@ namespace Tutorial2TareasMVC
             {
                 opciones.ResourcesPath = "Resources";
             });
+            //Automapper
+            builder.Services.AddAutoMapper(typeof(Program));
 
             //Añadir identity
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(opciones =>
