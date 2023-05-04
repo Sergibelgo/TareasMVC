@@ -94,7 +94,12 @@
                     await actualizarOrdenTareas();
                 }
             })
-
+            $("#reordenable-pasos").sortable({
+                axis:"y",
+                stop: async function(){
+                    await acutializarOrdenPasos();
+                }
+            })
         })
 
     </script>

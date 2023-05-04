@@ -114,3 +114,27 @@ async function borrarPaso(paso) {
         tarea.pasosRealizados(tarea.pasosRealizados() - 1)
     }
 }
+async function acutializarOrdenPasos() {
+    const ids = obtenerIdPasos();
+    await enviarIdsPasos(ids);
+    const arregloOrganizado = tareaEditarVM.pasos.sorted(function (a, b) {
+        return ids.indexOf(a.id().toString()) - ids.indexOf(b.id().toString());
+    })
+    tareaEditarVM.pasos(arregloOrganizado);
+}
+async function enviarIdsPasos(ids) {
+    var data = JSON.stringify(ids);
+    await fetch(`${urlPasos}/ordenar/${tareaEditarVM.id}`, {
+        method: "POST",
+        body: data,
+        headers: {
+            "Content-type":"application/json"
+        }
+    })
+}
+function obtenerIdPasos() {
+    const ids = $("[name=chbPaso]").map(function () {
+        return $(this).attr("data-id")
+    }).get();
+    return ids;
+}
