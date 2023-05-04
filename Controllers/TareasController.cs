@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tutorial2TareasMVC.DBContext;
@@ -14,11 +16,13 @@ namespace Tutorial2TareasMVC.Controllers
     {
         private readonly ContextDB _contextDB;
         private readonly IUserService userService;
+        private readonly IMapper mapper;
 
-        public TareasController(ContextDB contextDB, IUserService userService)
+        public TareasController(ContextDB contextDB, IUserService userService,IMapper mapper)
         {
             this._contextDB = contextDB;
             this.userService = userService;
+            this.mapper = mapper;
         }
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] string titulo)
@@ -48,11 +52,7 @@ namespace Tutorial2TareasMVC.Controllers
             var tareas = await _contextDB.Tareas
                 .Where(t => t.UsuarioCreacion.Id == usuarioId)
                 .OrderBy(t => t.Orden)
-                .Select(t => new TareaDTO
-            {
-                Id = t.Id,
-                Titulo = t.Titulo
-            })
+                .ProjectTo<TareaDTO>(mapper.ConfigurationProvider)
                 .ToListAsync();
             return Ok(tareas);
         }
