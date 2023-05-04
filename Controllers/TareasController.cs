@@ -56,5 +56,26 @@ namespace Tutorial2TareasMVC.Controllers
                 .ToListAsync();
             return Ok(tareas);
         }
+        [HttpPost("ordenar")]
+        public async Task<IActionResult> Ordenar([FromBody] int[] ids)
+        {
+            var usuarioId = userService.ObtenerUsuarioId();
+            var tareas = await _contextDB.Tareas.Where(t => t.UsuarioCreacion.Id == usuarioId).ToListAsync();
+            var tareasId = tareas.Select(t => t.Id);
+            var isPropetary=ids.Except(tareasId).ToList();
+            if (isPropetary.Any())
+            {
+                return Forbid();
+            }
+            var tareasDiccionario = tareas.ToDictionary(x => x.Id);
+            for(int i=0; i<ids.Length; i++)
+            {
+                var id = ids[i];
+                var tarea = tareasDiccionario[id];
+                tarea.Orden = i + 1;
+            }
+            await _contextDB.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
