@@ -88,5 +88,23 @@ namespace Tutorial2TareasMVC.Controllers
             }
             return Ok(tarea);
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditarTarea(int id, [FromBody] TareaEditarDTO modelo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var usuarioId=userService.ObtenerUsuarioId();
+            var tarea= await _contextDB.Tareas.FirstOrDefaultAsync(t=>t.Id==id && t.UsuarioCreacion.Id==usuarioId);
+            if (tarea is null)
+            {
+                return NotFound();
+            }
+            tarea.Titulo = modelo.Titulo;
+            tarea.Descripcion = modelo.Descripcion;
+            await _contextDB.SaveChangesAsync();
+            return Ok(tarea);
+        }
     }
 }
