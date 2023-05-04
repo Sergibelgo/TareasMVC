@@ -76,6 +76,10 @@ async function manejarClickTarea(tarea) {
     tareaEditarVM.id = json.id;
     tareaEditarVM.titulo(json.titulo);
     tareaEditarVM.descripcion(json.descripcion);
+    tareaEditarVM.pasos([]);
+    json.pasos.forEach(paso => {
+        tareaEditarVM.pasos.push(new pasoDTO({ ...paso, modoEdicion:false }))
+    })
     $("#modal-editar-tarea").modal("show");
 }
 async function manejarCambioTarea() {

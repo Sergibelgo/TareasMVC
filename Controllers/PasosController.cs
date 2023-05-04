@@ -21,19 +21,7 @@ namespace Tutorial2TareasMVC.Controllers
             this._contextDB = contextDB;
             this._userService = userService;
         }
-        // GET: api/<PasosController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
-        // GET api/<PasosController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         // POST api/<PasosController>
         [HttpPost("{tareaId:int}")]
@@ -67,16 +55,6 @@ namespace Tutorial2TareasMVC.Controllers
             return Ok(paso);
         }
 
-        // PUT api/<PasosController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
-        // DELETE api/<PasosController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
