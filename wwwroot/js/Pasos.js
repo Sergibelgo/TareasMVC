@@ -46,6 +46,11 @@ async function insertarPaso(paso, data, idTarea) {
     if (respuesta.ok) {
         const json = await respuesta.json();
         paso.id(json.id)
+        const tarea = obtenerTareaEnEdicion();
+        tarea.pasosTotales(tarea.pasosTotales() + 1);
+        if (paso.realizado()) {
+            tarea.pasosRealizados(tarea.pasosRealizados() + 1)
+        }
     } else {
         manejarErrorApi(respuesta)
     }
@@ -59,7 +64,7 @@ async function actualizarPaso(data, id) {
         }
     });
     if (respuesta.ok) {
-        
+
     } else {
         mostrarMensajeError(respuesta)
     }
@@ -75,6 +80,12 @@ function manejarClickCheckPaso(paso) {
     }
     const data = obtenerCuerpoPeticionPaso(paso);
     actualizarPaso(data, paso.id());
+    const tarea = obtenerTareaEnEdicion();
+    if (paso.realizado()) {
+        tarea.pasosRealizados(tarea.pasosRealizados() + 1)
+    } else {
+        tarea.pasosRealizados(tarea.pasosRealizados() - 1)
+    }
     return true;
 }
 function manejarClickBorrarPaso(paso) {
@@ -84,7 +95,7 @@ function manejarClickBorrarPaso(paso) {
 
         }, callBackCancel: () => {
 
-        }, titulo:"¿Esta seguro de querer borrar el paso?"
+        }, titulo: "¿Esta seguro de querer borrar el paso?"
     })
 }
 async function borrarPaso(paso) {
@@ -93,7 +104,13 @@ async function borrarPaso(paso) {
     });
     if (!respuesta.ok) {
         manejarErrorApi(respuesta);
+
         return;
     }
     tareaEditarVM.pasos.remove((item) => { return item.id() == paso.id() })
+    const tarea = obtenerTareaEnEdicion();
+    tarea.pasosTotales(tarea.pasosTotales() - 1);
+    if (paso.realizado()) {
+        tarea.pasosRealizados(tarea.pasosRealizados() - 1)
+    }
 }

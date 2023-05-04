@@ -20,6 +20,17 @@
         <div name="tarea" class="border mb-2 p-2" style="cursor:pointer" data-bind="click:manejarClickTarea">
             <div data-bind="text:titulo,hidden:esNuevo" class="fw-bold reordenable">
             </div>
+            <div name="pasos-resumen" data-bind="{visible:pasosTotales() > 0}">
+                <span data-bind="text:pasosRealizados">
+
+                </span>/
+                <span data-bind="text:pasosTotales">
+
+                </span>
+                <span data-bind="text:porcentajeCompletado">
+
+                </span>
+            </div>
             <input type="text" name="titulo-tarea" autocomplete="off" data-bind="value:titulo,visible:esNuevo,attr:{'data-id':id},event:{focusout: manejarFocusoutTituloTarea}" />
         </div>
     </div>
@@ -47,10 +58,16 @@
             descripcion: ko.observable(''),
             pasos: ko.observableArray([])
         }
-        function tareaElementoListadoDTO({ id, titulo }) {
+        function tareaElementoListadoDTO({ id, titulo, pasosRealizados, pasosTotales }) {
             var self = this;
             self.id = ko.observable(id);
             self.titulo = ko.observable(titulo);
+            self.pasosTotales = ko.observable(pasosTotales);
+            self.pasosRealizados = ko.observable(pasosRealizados);
+            self.porcentajeCompletado = ko.pureComputed(function () {
+                const calculo = Math.round(self.pasosRealizados() * 1.0 / self.pasosTotales() * 100);
+                return `(${calculo}%)`
+            })
             self.esNuevo = ko.pureComputed(function () {
                 return self.id() == 0
             })
