@@ -40,7 +40,7 @@ namespace Tutorial2TareasMVC.Controllers
         public async Task<IActionResult> Post(int tareaId, [FromBody] PasoCrearDTO model)
         {
             var usuarioId = _userService.ObtenerUsuarioId();
-            var tarea = await _contextDB.Tareas.FirstOrDefaultAsync(t => t.Id == tareaId);
+            var tarea = await _contextDB.Tareas.Include(t=>t.UsuarioCreacion).FirstOrDefaultAsync(t => t.Id == tareaId);
             if (tarea is null)
             {
                 return NotFound();
