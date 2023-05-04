@@ -25,7 +25,8 @@ async function manejarClickSalvarPaso(paso) {
     if (esNuevo) {
         insertarPaso(paso, data, idTarea);
     } else {
-        actualizarPaso(data, paso.id(), paso);
+        actualizarPaso(data, paso.id());
+        paso.modoEdicion(false)
     }
 }
 function obtenerCuerpoPeticionPaso(paso) {
@@ -49,7 +50,7 @@ async function insertarPaso(paso, data, idTarea) {
         manejarErrorApi(respuesta)
     }
 }
-async function actualizarPaso(data, id,paso) {
+async function actualizarPaso(data, id) {
     const respuesta = await fetch(`${urlPasos}/${id}`, {
         body: data,
         method: "PUT",
@@ -58,7 +59,7 @@ async function actualizarPaso(data, id,paso) {
         }
     });
     if (respuesta.ok) {
-        paso.modoEdicion(false)
+        
     } else {
         mostrarMensajeError(respuesta)
     }
@@ -67,4 +68,12 @@ function manejarClickDescripcionPaso(paso) {
     paso.modoEdicion(true);
     paso.descripcionAnterior = paso.descripcion();
     $("[name=txtPasoDescripcion]:visible").focus();
+}
+function manejarClickCheckPaso(paso) {
+    if (paso.esNuevo()) {
+        return true;
+    }
+    const data = obtenerCuerpoPeticionPaso(paso);
+    actualizarPaso(data, paso.id());
+    return true;
 }
