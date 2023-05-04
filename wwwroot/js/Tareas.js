@@ -78,7 +78,7 @@ async function manejarClickTarea(tarea) {
     tareaEditarVM.descripcion(json.descripcion);
     tareaEditarVM.pasos([]);
     json.pasos.forEach(paso => {
-        tareaEditarVM.pasos.push(new pasoDTO({ ...paso, modoEdicion:false }))
+        tareaEditarVM.pasos.push(new pasoDTO({ ...paso, modoEdicion: false }))
     })
     $("#modal-editar-tarea").modal("show");
 }
@@ -100,7 +100,7 @@ async function manejarCambioTarea() {
     } catch {
         swal.fire({
             icon: "error",
-            text:"Error al guardar los cambios"
+            text: "Error al guardar los cambios"
         })
     }
 }
@@ -123,17 +123,21 @@ function intentarBorrarTarea(tarea) {
         callBackAceptar: () => {
             borrarTarea(tarea)
         },
-        titulo:"¿Desea borrar la tarea?"
+        titulo: "¿Desea borrar la tarea?"
     })
 }
 async function borrarTarea(tarea) {
     const idTarea = tarea.id;
     const respuesta = await fetch(`${urlTareas}/${idTarea}`, {
-        method:"DELETE"
+        method: "DELETE"
     })
     if (respuesta.ok) {
         const indice = tareaListadoViewModel.tareas().findIndex(t => t.id() == idTarea);
         tareaListadoViewModel.tareas.splice(indice, 1);
         $("#modal-editar-tarea").modal("hide");
     }
+}
+function obtenerTareaEnEdicion() {
+    const indice = tareaListadoViewModel.tareas().findIndex(t => t.id() == tareaEditarVM.id);
+    return tareaListadoViewModel.tareas()[indice];
 }
