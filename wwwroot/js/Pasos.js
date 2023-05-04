@@ -77,3 +77,23 @@ function manejarClickCheckPaso(paso) {
     actualizarPaso(data, paso.id());
     return true;
 }
+function manejarClickBorrarPaso(paso) {
+    confirmarAccion({
+        callBackAceptar: () => {
+            borrarPaso(paso);
+
+        }, callBackCancel: () => {
+
+        }, titulo:"¿Esta seguro de querer borrar el paso?"
+    })
+}
+async function borrarPaso(paso) {
+    const respuesta = await fetch(`${urlPasos}/${paso.id()}`, {
+        method: "DELETE"
+    });
+    if (!respuesta.ok) {
+        manejarErrorApi(respuesta);
+        return;
+    }
+    tareaEditarVM.pasos.remove((item) => { return item.id() == paso.id() })
+}
