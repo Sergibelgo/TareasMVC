@@ -20,14 +20,14 @@ async function manejarFocusoutTituloTarea(tarea) {
         const json = await respuesta.json();
         tarea.id(json.id);
     } else {
-        alert("a");
+        manejarErrorApi(respuesta);
     }
 }
 async function obtenerTareas() {
     tareaListadoViewModel.cargando(true);
     const respuesta = await fetch(urlTareas);
     if (!respuesta.ok) {
-        alert("a");
+        manejarErrorApi(respuesta);
     } else {
         const json = await respuesta.json();
         tareaListadoViewModel.tareas([]);
