@@ -89,7 +89,32 @@ namespace Tutorial2TareasMVC.Controllers
             await _contextDB.SaveChangesAsync();
             return Ok();
         }
-
+        [HttpPost("ordenar/{tareaId:int}")]
+        public async Task<IActionResult> Ordenar(int tareaId, [FromBody] Guid[] ids)
+        {
+            var usuarioId = _userService.ObtenerUsuarioId();
+            var tarea = await _contextDB.Tareas.FirstOrDefaultAsync(t=>t.Id==tareaId&&t.UsuarioCreacion.Id==usuarioId);
+            if (tarea is null)
+            {
+                return NotFound();
+            }
+            var pasos = await _contextDB.Pasos.Where(x => x.Tarea.Id == tareaId).ToListAsync();
+            var pasosIds = pasos.Select(x => x.Id);
+            var isPert = ids.Except(pasosIds).ToList();
+            if (isPert.Any())
+            {
+                return BadRequest("No todos los pasos");
+            }
+            var pasosDiccionario = pasos.ToDictionary(p => p.Id);
+            for (int i = 0; i < ids.Length; i++)
+            {
+                var pasoId = ids[i];
+                var paso = pasosDiccionario[pasoId];
+                paso.Orden = i + 1;
+            }
+            await _contextDB.SaveChangesAsync();
+            return Ok();
+        }
 
     }
 }
