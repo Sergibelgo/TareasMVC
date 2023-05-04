@@ -8,6 +8,7 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Tutorial2TareasMVC.DBContext;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Tutorial2TareasMVC.Services;
+using System.Text.Json.Serialization;
 
 namespace Tutorial2TareasMVC
 {
@@ -31,6 +32,9 @@ namespace Tutorial2TareasMVC
             }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization(opciones =>
             {
                 opciones.DataAnnotationLocalizerProvider = (_, factoria) => factoria.Create(typeof(RecursoCompartido));
+            }).AddJsonOptions(opciones =>
+            {
+                opciones.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             }); 
             builder.Services.AddControllersWithViews();
             builder.Services.AddTransient<IContextDB, ContextDB>();
