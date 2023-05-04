@@ -72,6 +72,23 @@ namespace Tutorial2TareasMVC.Controllers
             await _contextDB.SaveChangesAsync();
             return Ok(paso);
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var usuarioId = _userService.ObtenerUsuarioId();
+            var paso = await _contextDB.Pasos.Include(p => p.Tarea).ThenInclude(p => p.UsuarioCreacion).FirstOrDefaultAsync(p => p.Id == id);
+            if (paso is null)
+            {
+                return NotFound();
+            }
+            if (paso.Tarea.UsuarioCreacion.Id!=usuarioId)
+            {
+                return Forbid();
+            }
+            _contextDB.Remove(paso);
+            await _contextDB.SaveChangesAsync();
+            return Ok();
+        }
 
 
     }
