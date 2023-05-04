@@ -17,3 +17,17 @@ function mostrarMensajeError(mensaje) {
         title:"Error..."
     })
 }
+function confirmarAccion({ callBackAceptar,callBackCancel,titulo }) {
+    Swal.fire({
+        title: titulo || "¿Realmente deseas hacer esto?",
+        showCancelButton: true,
+        confirmButtonText: "Si",
+        focusCancel:true
+    }).then(resultado => {
+        if (resultado.isConfirmed) {
+            callBackAceptar();
+        } else if (callBackCancel) {
+            callBackCancel();
+        }
+    })
+}

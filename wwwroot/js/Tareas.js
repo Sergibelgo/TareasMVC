@@ -114,3 +114,22 @@ async function editarTarea(tarea) {
         throw "error";
     }
 }
+function intentarBorrarTarea(tarea) {
+    confirmarAccion({
+        callBackAceptar: () => {
+            borrarTarea(tarea)
+        },
+        titulo:"¿Desea borrar la tarea?"
+    })
+}
+async function borrarTarea(tarea) {
+    const idTarea = tarea.id;
+    const respuesta = await fetch(`${urlTareas}/${idTarea}`, {
+        method:"DELETE"
+    })
+    if (respuesta.ok) {
+        const indice = tareaListadoViewModel.tareas().findIndex(t => t.id() == idTarea);
+        tareaListadoViewModel.tareas.splice(indice, 1);
+        $("#modal-editar-tarea").modal("hide");
+    }
+}
