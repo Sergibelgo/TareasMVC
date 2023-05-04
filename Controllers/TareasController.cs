@@ -106,5 +106,18 @@ namespace Tutorial2TareasMVC.Controllers
             await _contextDB.SaveChangesAsync();
             return Ok(tarea);
         }
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> BorrarTarea(int id)
+        {
+            var usuarioId = userService.ObtenerUsuarioId();
+            var tarea =await _contextDB.Tareas.FirstOrDefaultAsync(t => t.Id == id && t.UsuarioCreacion.Id==usuarioId);
+            if (tarea is null)
+            {
+                return NotFound();
+            }
+            _contextDB.Remove(tarea);
+            await _contextDB.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
