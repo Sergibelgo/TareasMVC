@@ -26,8 +26,7 @@ async function manejarSeleccionArchivoTarea(event) {
 
 }
 function prepararArchivosAdjuntos(archivosAdjuntos) {
-    archivosAdjuntos.forEach(archivo =>
-    {
+    archivosAdjuntos.forEach(archivo => {
         let fechaCreacion = archivo.fechaCreacion
         if (fechaCreacion.indexOf("Z") == -1) {
             fechaCreacion += "Z";
@@ -37,4 +36,31 @@ function prepararArchivosAdjuntos(archivosAdjuntos) {
         let archivoGuardar = new archivoAdjuntoViewModel({ ...archivo, modoEdicion: false });
         tareaEditarVM.archivosAdjuntos.push(archivoGuardar)
     })
+}
+let tituloArchivoAnterior;
+function manejarClickTituloArchivoAdjunto(archivo) {
+    archivo.modoEdicion(true);
+    tituloArchivoAnterior = archivo.titulo();
+    $("[name='txtArchivoAdjuntoTitulo']:visible").focus();
+}
+async function manejarFocusoutTituloArchivoAdjunto(archivo) {
+    archivo.modoEdicion(false);
+    const idArchivo = archivo.id;
+    if (archivo.titulo() == tituloArchivoAnterior || !archivo.titulo()) {
+        archivo.titulo(tituloArchivoAnterior);
+        return;
+    }
+    const data = JSON.stringify(archivo.titulo());
+    const respuesta = await fetch(`${urlArchivos}/${idArchivo}`, {
+        method: "PUT",
+        body: data,
+        headers: {
+            "Content-type":"application/json"
+        }
+    })
+    if (!respuesta.ok) {
+        manejarErrorApi(respuesta)
+        return;
+    }
+
 }
