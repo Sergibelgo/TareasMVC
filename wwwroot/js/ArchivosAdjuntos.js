@@ -55,12 +55,32 @@ async function manejarFocusoutTituloArchivoAdjunto(archivo) {
         method: "PUT",
         body: data,
         headers: {
-            "Content-type":"application/json"
+            "Content-type": "application/json"
         }
     })
     if (!respuesta.ok) {
         manejarErrorApi(respuesta)
         return;
     }
+}
 
+function manejarClickBorrarArchivoAdjunto(archivo) {
+    confirmarAccion({
+        callBackAceptar: async () => {
+            await borrarArchivo(archivo);
+        },
+        callBackCancelar: () => { },
+        mensaje: "¿Desea borrar este archivo?"
+    })
+}
+async function borrarArchivo(archivo) {
+    const respuesta = await fetch(`${urlArchivos}/${archivo.id}`,
+        {
+            method:"DELETE"
+        })
+    if (!respuesta.ok) {
+        manejarErrorApi(respuesta)
+        return;
+    }
+    tareaEditarVM.archivosAdjuntos.remove(function (item) { return item.id == archivo.id });
 }
