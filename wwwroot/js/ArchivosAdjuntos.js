@@ -84,3 +84,6 @@ async function borrarArchivo(archivo) {
     }
     tareaEditarVM.archivosAdjuntos.remove(function (item) { return item.id == archivo.id });
 }
+function manejarClickDescargarArchivoAdjunto(archivo) {
+    descargarArchivo(archivo.url, archivo.titulo());
+}
