@@ -80,6 +80,7 @@ async function manejarClickTarea(tarea) {
     json.pasos.forEach(paso => {
         tareaEditarVM.pasos.push(new pasoDTO({ ...paso, modoEdicion: false }))
     })
+    prepararArchivosAdjuntos(json.archivoAdjuntos);
     $("#modal-editar-tarea").modal("show");
 }
 async function manejarCambioTarea() {
