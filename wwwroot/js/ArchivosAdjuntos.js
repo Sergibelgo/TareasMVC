@@ -21,7 +21,20 @@ async function manejarSeleccionArchivoTarea(event) {
         return;
     }
     const json = await respuesta.json();
-    console.log(json);
+    prepararArchivosAdjuntos(json);
     inputArchivoTarea.value = null;
 
+}
+function prepararArchivosAdjuntos(archivosAdjuntos) {
+    archivosAdjuntos.forEach(archivo =>
+    {
+        let fechaCreacion = archivo.fechaCreacion
+        if (fechaCreacion.indexOf("Z") == -1) {
+            fechaCreacion += "Z";
+        }
+        const fechaCreationDT = new Date(fechaCreacion);
+        archivo.publicado = fechaCreationDT.toLocaleString();
+        let archivoGuardar = new archivoAdjuntoViewModel({ ...archivo, modoEdicion: false });
+        tareaEditarVM.archivosAdjuntos.push(archivoGuardar)
+    })
 }
