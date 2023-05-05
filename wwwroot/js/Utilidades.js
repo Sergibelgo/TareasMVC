@@ -1,5 +1,6 @@
 ﻿const urlTareas = "/api/tareas";
 const urlPasos = "/api/pasos";
+const urlArchivos = "/api/archivos";
 async function manejarErrorApi(respuesta) {
     let mensajeError = "";
     if (respuesta.status == 400) {
