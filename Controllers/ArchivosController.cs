@@ -71,5 +71,23 @@ namespace Tutorial2TareasMVC.Controllers
             await _contextDB.SaveChangesAsync();
             return Ok();
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var usuarioId = _userService.ObtenerUsuarioId();
+            var archivoAdjunto = await _contextDB.ArchivoAdjuntos.Include(a => a.Tarea).ThenInclude(a => a.UsuarioCreacion).FirstOrDefaultAsync(a => a.Id == id);
+            if (archivoAdjunto is null)
+            {
+                return NotFound();
+            }
+            if (archivoAdjunto.Tarea.UsuarioCreacion.Id != usuarioId)
+            {
+                return Forbid();
+            }
+            _contextDB.Remove(archivoAdjunto);
+            await _contextDB.SaveChangesAsync();
+            await _storeService.Borrar(archivoAdjunto.Url,contenedor);
+            return Ok();
+        }
     }
 }
