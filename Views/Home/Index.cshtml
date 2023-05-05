@@ -39,6 +39,7 @@
 @section Scripts{
     <script src="~/js/Tareas.js" asp-append-version="true"></script>
     <script src="~/js/Pasos.js" asp-append-version="true"></script>
+    <script src="~/js/ArchivosAdjuntos.js" asp-append-version="true"></script>
     <script>
         function tareaListadoViewModelFn() {
             let self = this;
@@ -56,7 +57,8 @@
             id: 0,
             titulo: ko.observable(''),
             descripcion: ko.observable(''),
-            pasos: ko.observableArray([])
+            pasos: ko.observableArray([]),
+            archivosAdjuntos:ko.observableArray([])
         }
         function tareaElementoListadoDTO({ id, titulo, pasosRealizados, pasosTotales }) {
             var self = this;
